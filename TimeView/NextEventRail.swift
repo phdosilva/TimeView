@@ -12,20 +12,9 @@ nonisolated struct AgendaEvent {
     let end: Int
 }
 
-nonisolated enum SampleAgenda {
-    static let events = [
-        AgendaEvent(start: 9 * 60 + 30, end: 9 * 60 + 45),
-        AgendaEvent(start: 11 * 60, end: 11 * 60 + 30),
-        AgendaEvent(start: 12 * 60, end: 13 * 60),
-        AgendaEvent(start: 14 * 60, end: 15 * 60),
-        AgendaEvent(start: 16 * 60 + 30, end: 17 * 60),
-        AgendaEvent(start: 18 * 60, end: 19 * 60)
-    ]
-}
-
 struct NextEventRail: View {
     let minute: Int
-    var events = SampleAgenda.events
+    let events: [AgendaEvent]
     var span = 180
     
     var body: some View {

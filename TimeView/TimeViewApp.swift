@@ -4,7 +4,8 @@ import AppKit
 @main
 struct TimeViewApp: App {
     @State private var simulatedMinute = 14.0 * 60 + 40
-
+    @State private var agenda = CalendarAgenda()
+    
     private var minute: Int { Int(simulatedMinute) }
 
     var body: some Scene {
@@ -21,7 +22,7 @@ struct TimeViewApp: App {
             }
             .padding()
         } label: {
-            Image(nsImage: menuBarImage(NextEventRail(minute: minute)))
+            Image(nsImage: menuBarImage(NextEventRail(minute: minute, events: agenda.events)))
         }
         .menuBarExtraStyle(.window)
     }
