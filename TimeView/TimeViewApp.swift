@@ -3,9 +3,9 @@ import AppKit
 
 @main
 struct TimeViewApp: App {
-    @State private var clock = Clock()
     @State private var simulated = 0.6
-
+    @State private var symbol = "clock.circle"
+    
     var body: some Scene {
         MenuBarExtra {
             VStack(alignment: .leading, spacing: 12) {
@@ -20,8 +20,14 @@ struct TimeViewApp: App {
             }
             .padding()
         } label: {
-//            Text(clock.now, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).hour().minute())
-            Image(nsImage: HalfRingQuarters.menuBarImage(remaining: simulated))
+            Image(nsImage: menuBarImage(
+                Image(systemName: symbol, variableValue: simulated)
+                    .symbolVariableValueMode(.draw   )
+                    .symbolRenderingMode(.palette)
+                    .symbolColorRenderingMode(.gradient)
+                    .foregroundStyle(.primary, Color.accentColor)
+                    .font(.system(size: 17, weight: .bold)))
+            )
         }
         .menuBarExtraStyle(.window)
     }
