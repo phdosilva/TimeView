@@ -10,6 +10,8 @@ import SwiftUI
 nonisolated struct AgendaEvent {
     let start: Int
     let end: Int
+    let title: String
+    let color: Color
 }
 
 struct NextEventRail: View {

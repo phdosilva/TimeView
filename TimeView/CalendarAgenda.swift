@@ -6,7 +6,7 @@
 //
 
 import EventKit
-import Observation
+import SwiftUI
 
 @Observable
 final class CalendarAgenda {
@@ -36,7 +36,7 @@ final class CalendarAgenda {
         
         events = store.events(matching: predicate)
             .filter { !$0.isAllDay }
-            .map { AgendaEvent(start: minute($0.startDate), end: minute($0.endDate)) }
+            .map { AgendaEvent(start: minute($0.startDate), end: minute($0.endDate), title: $0.title ?? "", color: Color(cgColor: $0.calendar.cgColor)) }
             .sorted { $0.start < $1.start }
     }
 }
