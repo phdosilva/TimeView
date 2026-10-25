@@ -10,31 +10,60 @@ struct TimeViewApp: App {
     @State private var isSimulating = false
     @State private var simulatedMinute = 0.0
     private var minute: Int { isSimulating ? Int(simulatedMinute) : clock.minuteOfDay }
+    
+    private func shiftDebugTime(by delta: Int) {
+        if !isSimulating {
+            simulatedMinute = Double(clock.minuteOfDay)
+            isSimulating = true
+        }
+        simulatedMinute += Double(delta)
+    }
     #else
     private var minute: Int { clock.minuteOfDay }
     #endif
     
     var body: some Scene {
         MenuBarExtra {
-            VStack(alignment: .leading, spacing: 6) {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("TimeView").font(.headline)
-                    #if DEBUG
-                    Text(String(format: "%02d:%02d", minute / 60, minute % 60))
-                    Toggle("Simular horário", isOn: $isSimulating)
-                    if isSimulating {Slider(value: $simulatedMinute, in: 0...1439, step: 1) }
-                    #endif
-                }.padding(8)
-                Divider()
-                MenuRowButton(title: "Sair do TimeView") {
-                    NSApplication.shared.terminate(nil)
+            Section("Hoje") {
+                let upcoming = agenda.events.filter { $0.end > minute }
+                if upcoming.isEmpty {
+                    Text("Nenhum evento restante")
                 }
-                .keyboardShortcut("q")
+                ForEach(upcoming.indices, id: \.self) { index in
+                    let event = upcoming[index]
+                    Button(action: openCalendar) {
+                        Text(event.title)
+                        Text("\(clockTime(event.start)) – \(clockTime(event.end))")
+                    }
+                }
             }
-            .padding(6)
+            Button("Abrir Calendário", action: openCalendar)
+            Text("TimeView \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")")
+            Divider()
+            #if DEBUG
+            Menu("Simular horário") {
+                Button("Avançar 15 min") { shiftDebugTime(by: 15) }
+                Button("Voltar 15 min") { shiftDebugTime(by: -15) }
+                Divider()
+                Button("Usar horário real") { isSimulating = false }
+            }
+            #endif
+            Button("Sair do TimeView") {
+                NSApplication.shared.terminate(nil)
+            }
+            .keyboardShortcut("q")
         } label: {
             Image(nsImage: menuBarImage(MenuBarLabel(minute: minute, events: agenda.events)))
         }
-        .menuBarExtraStyle(.window)
+        .menuBarExtraStyle(.menu)
+    }
+    
+    private func clockTime(_ minute: Int) -> String {
+        String(format: "%02d:%02d", minute / 60, minute % 60)
+    }
+
+    private func openCalendar() {
+        NSWorkspace.shared.open(URL(string: "ical://")!)
     }
 }
+
