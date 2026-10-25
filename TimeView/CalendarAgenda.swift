@@ -19,6 +19,10 @@ final class CalendarAgenda {
         NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in
             Task { await self?.load() }
         }
+        
+        NotificationCenter.default.addObserver(forName: .NSCalendarDayChanged, object: nil, queue: .main) { [weak self] _ in
+            Task { await self?.load() }
+        }
     }
     
     private func load() async {
