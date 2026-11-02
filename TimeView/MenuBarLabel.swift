@@ -35,7 +35,6 @@ struct MenuBarLabel: View {
                 .lineLimit(1)
                 .frame(maxWidth: 70, alignment: .trailing)
             }
-            // NextEventRail(minute: minute, events: events)
             if (dayStart..<dayEnd).contains(minute) {
                 HourBars(minute: minute, start: dayStart, end: dayEnd, events: events)
             }

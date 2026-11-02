@@ -8,6 +8,13 @@
 import EventKit
 import SwiftUI
 
+nonisolated struct AgendaEvent {
+    let start: Int
+    let end: Int
+    let title: String
+    let color: Color
+}
+
 @Observable
 final class CalendarAgenda {
     private(set) var events: [AgendaEvent] = []
@@ -40,3 +47,4 @@ final class CalendarAgenda {
             .sorted { $0.start < $1.start }
     }
 }
+
