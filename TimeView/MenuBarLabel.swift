@@ -10,6 +10,8 @@ import SwiftUI
 struct MenuBarLabel: View {
     let minute: Int
     let events: [AgendaEvent]
+    let dayStart: Int
+    let dayEnd: Int
 
     private var current: AgendaEvent? { events.first { $0.start <= minute && minute < $0.end } }
     private var next: AgendaEvent? { events.first { $0.start > minute } }
@@ -33,7 +35,10 @@ struct MenuBarLabel: View {
                 .lineLimit(1)
                 .frame(maxWidth: 70, alignment: .trailing)
             }
-            NextEventRail(minute: minute, events: events)
+            // NextEventRail(minute: minute, events: events)
+            if (dayStart..<dayEnd).contains(minute) {
+                HourBars(minute: minute, start: dayStart, end: dayEnd, events: events)
+            }
         }
     }
 }

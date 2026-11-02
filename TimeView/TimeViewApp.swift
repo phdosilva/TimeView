@@ -5,6 +5,8 @@ import AppKit
 struct TimeViewApp: App {
     @State private var clock = Clock()
     @State private var agenda = CalendarAgenda()
+    @AppStorage("dayStartHour") private var dayStartHour = 8
+    @AppStorage("dayEndHour") private var dayEndHour = 18
     
     #if DEBUG
     @State private var isSimulating = false
@@ -38,6 +40,14 @@ struct TimeViewApp: App {
                 }
             }
             Button("Abrir Calendário", action: openCalendar)
+            Menu("Horário do dia") {
+                Picker("Início", selection: $dayStartHour) {
+                    ForEach(5..<dayEndHour, id: \.self) { Text("\($0):00").tag($0) }
+                }
+                Picker("Fim", selection: $dayEndHour) {
+                    ForEach((dayStartHour + 1)...23, id: \.self) { Text("\($0):00").tag($0) }
+                }
+            }
             Text("TimeView \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")")
             Divider()
             #if DEBUG
@@ -53,8 +63,7 @@ struct TimeViewApp: App {
             }
             .keyboardShortcut("q")
         } label: {
-            Image(nsImage: menuBarImage(MenuBarLabel(minute: minute, events: agenda.events)))
-        }
+            Image(nsImage: menuBarImage(MenuBarLabel(minute: minute, events: agenda.events, dayStart: dayStartHour * 60, dayEnd: dayEndHour * 60)))}
         .menuBarExtraStyle(.menu)
     }
     
